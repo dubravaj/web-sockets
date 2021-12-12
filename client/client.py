@@ -15,11 +15,12 @@ class WebsocketClient:
     async def connect(self):
         """Create connection to server"""
         async with websockets.connect(f"ws://{self.host}:{self.port}") as websocket:
-            await websocket.send("hello from client")
-            response = await websocket.recv()
-            print(f"{response}")
+            while(True):
+                message = input("> ")
+                await websocket.send(message)
+                response = await websocket.recv()
+                print(f"{response}\n")
             
-    
 if __name__ == "__main__":
     client = WebsocketClient()
     asyncio.run(client.connect())

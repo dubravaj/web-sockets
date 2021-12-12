@@ -4,6 +4,7 @@ import logging
 from datetime import datetime
 import asyncio
 import websockets
+from messages import handle_request
 
 logging.basicConfig(
     format="%(levelname)s:%(name)s: %(message)s",
@@ -22,13 +23,9 @@ class WebsocketServer:
         """Send reply to the client"""
         async for message in websocket:
             self.logger.info("Incoming message: %s", message)
-            await websocket.send(message)
-
-    def _get_current_time(self) -> str:
-        """Get current time from server"""
-        curent_time = datetime.now()
-        return curent_time.strftime("%Y-%m-%d %H:%M:%S")
-
+            response = await handle_request(message)
+            self.logger.debug("Request response: %s", response)
+            await websocket.send(response)
 
     async def run(self):
         """Run server"""
